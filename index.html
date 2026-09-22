@@ -4,52 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="NSE/BSE Tracker Pro V2 - Sector wise stock portfolio tracker.">
-    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
-    <title>NSE Tracker Pro V2 (Sector, OCR & Live Indices)</title>
+    <title>NSE BSE TRACKER PRO V2</title>
 
-    <!-- फोटो से टेक्स्ट पढ़ने के लिए Tesseract.js लाइब्रेरी (OCR) -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
 
 <style>
-/* =========================================
-   थीम और कलर्स (Dark & Light Mode) 
-   ========================================= */
 :root {
-    --bg: #0f0f0f;
-    --text: #fff;
-    --card-bg: #1c1c1e;
-    --border: #333;
-    --input-bg: #1e1e1e;
-    --btn-bg: #00e676;
-    --btn-text: #000;
-    --muted: #aaa;
-    --sector-header: #2c2c2e;
+    --bg: #0f0f0f; --text: #fff; --card-bg: #1c1c1e; --border: #333;
+    --input-bg: #1e1e1e; --btn-bg: #00e676; --btn-text: #000; --muted: #aaa; --sector-header: #2c2c2e;
 }
-
 body.light-theme {
-    --bg: #f4f6f8;
-    --text: #111;
-    --card-bg: #fff;
-    --border: #e0e0e0;
-    --input-bg: #f9f9f9;
-    --btn-bg: #29b6f6;
-    --btn-text: #fff;
-    --muted: #666;
-    --sector-header: #e5e5ea;
+    --bg: #f4f6f8; --text: #111; --card-bg: #fff; --border: #e0e0e0;
+    --input-bg: #f9f9f9; --btn-bg: #29b6f6; --btn-text: #fff; --muted: #666; --sector-header: #e5e5ea;
 }
-
 body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; padding: 16px; max-width: 500px; margin: 0 auto; transition: background 0.3s, color 0.3s; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-h2 { margin: 0; font-size: 1.5em; display: flex; align-items: center; gap: 8px; }
+h2 { margin: 0; font-size: 1.3em; display: flex; align-items: center; gap: 8px; }
 .status-dot { width: 10px; height: 10px; background: #00e676; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #00e676; }
 
-/* =========================================
-   बाज़ार का लाइव सूचकांक (NIFTY / SENSEX)
-   ========================================= */
 .markets-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 .indices-container { display: flex; gap: 10px; margin-bottom: 20px; }
-.index-card { flex: 1; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 5px; }
+.index-card { flex: 1; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 5px; }
 .index-top { display: flex; justify-content: space-between; align-items: center; }
 .index-name { font-size: 14px; font-weight: bold; color: var(--text); }
 .index-price { font-size: 15px; font-weight: bold; }
@@ -57,33 +33,31 @@ h2 { margin: 0; font-size: 1.5em; display: flex; align-items: center; gap: 8px; 
 .index-expiry { font-size: 10px; background: var(--input-bg); color: var(--muted); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
 .index-change { font-size: 12px; }
 
-/* चेतावनी (SEBI Disclaimer) */
 .disclaimer-box { background: rgba(255, 82, 82, 0.1); border: 1px solid #ff5252; padding: 10px; border-radius: 8px; font-size: 11px; color: var(--text); margin-bottom: 15px; line-height: 1.4; }
 .disclaimer-box span { color: #ff5252; font-weight: bold; }
 
-/* मेनू और इनपुट */
 .menu-btn { background: var(--card-bg); border: 1px solid var(--border); font-size: 14px; cursor: pointer; color: var(--text); padding: 8px 12px; border-radius: 8px; }
-.input-group { display: flex; gap: 8px; margin-bottom: 15px; position: relative; }
+.input-group { display: flex; gap: 8px; margin-bottom: 8px; position: relative; }
 input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); outline: none; }
 .btn { padding: 12px 15px; border-radius: 10px; border: 0; background: var(--btn-bg); color: var(--btn-text); font-weight: bold; cursor: pointer; }
-
-/* कैमरा / OCR अपलोड बटन */
 .camera-btn { background: #333; color: #fff; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+
+/* NSE/BSE Toggle CSS */
+.exchange-toggle { display: flex; gap: 15px; font-size: 12px; color: var(--muted); margin-bottom: 15px; padding-left: 5px; }
+.exchange-toggle label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+
 #ocr-loading { font-size: 12px; color: #00e676; display: none; margin-bottom: 10px; text-align: center; }
 
-/* सर्च सजेशन */
 .suggestions-box { position: absolute; top: 100%; left: 0; right: 80px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 1000; display: none; margin-top: 5px; }
 .suggestion-item { padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 14px; font-weight: bold; color: var(--text); }
 .suggestion-item:last-child { border-bottom: none; }
 .suggestion-item:hover { background: var(--card-bg); }
 
-/* सेक्टर हेडिंग */
 .sector-header { background: var(--sector-header); padding: 8px 12px; border-radius: 6px; font-size: 14px; font-weight: bold; margin: 20px 0 10px 0; color: var(--text); border-left: 4px solid var(--btn-bg); }
-
-/* स्टॉक कार्ड */
 .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-.sym { font-size: 1.2em; font-weight: bold; }
+.sym { font-size: 1.2em; font-weight: bold; display:flex; align-items:center; gap:6px; }
+.exc-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; background: #444; color: #fff; font-weight: normal; }
 .price { font-size: 1.3em; font-weight: bold; margin-top: 5px; }
 .green { color: #00e676; }
 .red { color: #ff5252; }
@@ -93,21 +67,18 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
 .del-btn { background: #ff525222; color: #ff5252; }
 .refresh-btn { background: #29b6f622; color: #29b6f6; }
 
-/* रिसर्च लिंक्स */
 .research-links { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
 .r-link { text-decoration: none; font-size: 12px; font-weight: bold; padding: 8px; border-radius: 6px; color: #fff !important; display: flex; align-items: center; justify-content: center; flex: 1; gap: 5px; }
 .r-yahoo { background: #720e9e; }
 .r-google { background: #4285F4; }
 .r-screener { background: #263238; }
 
-/* शॉर्ट न्यूज़ फीड */
 .news-box { margin-top: 12px; padding: 10px; background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border); }
 .news-title { font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--muted); }
 .news-item { font-size: 12px; margin-bottom: 5px; display: flex; gap: 6px; align-items: flex-start; }
 .dot-green { color: #00e676; font-size: 14px; line-height: 1; }
 .dot-red { color: #ff5252; font-size: 14px; line-height: 1; }
 
-/* हिस्ट्री फ़िल्टर */
 .history-box { max-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; margin-top: 10px; background: var(--input-bg); }
 .hist-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .hist-row:last-child { border-bottom: none; }
@@ -115,7 +86,6 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
 .filter-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; flex: 1; }
 .filter-btn.active { background: var(--btn-bg); color: var(--btn-text); border-color: var(--btn-bg); font-weight: bold; }
 
-/* ऑथेंटिकेशन (लॉगिन) स्क्रीन */
 .full-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: #121212; color: white; padding-top: 20px; }
 .auth-input-container { position: relative; width: 250px; margin: 5px auto 15px auto; }
 .auth-input { width: 100%; padding: 10px 40px 10px 15px; min-height: 45px; border-radius: 25px; border: 1px solid #555; background-color: #fff; color: #000; font-size: 16px; outline: none; }
@@ -129,13 +99,23 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
 
 <!-- लोडिंग स्क्रीन -->
 <div id="loading-screen" class="full-screen">
-    <h2 style="color: #4CAF50;">NSE Tracker Pro V2</h2>
+    <h2 style="color: #4CAF50; text-align:center;">NSE BSE TRACKER PRO V2</h2>
     <p>Loading... ⏳</p>
 </div>
 
+<!-- Failsafe Loading Timeout -->
+<script>
+    setTimeout(function() {
+        var loader = document.getElementById("loading-screen");
+        if(loader && loader.style.display !== "none") {
+            loader.innerHTML += "<br><p style='color:#ff5252; font-size:13px; text-align:center;'>लॉगिन लोड होने में समय लग रहा है।<br>कृपया अपना इंटरनेट और Firebase डोमेन चेक करें।</p><button onclick='location.reload()' style='margin-top:10px; padding:8px 20px; background:#ff5252; color:#fff; border:none; border-radius:5px; font-weight:bold; cursor:pointer;'>Refresh</button>";
+        }
+    }, 6000);
+</script>
+
 <!-- लॉगिन स्क्रीन -->
 <div id="login-screen" class="full-screen" style="display: none;">
-    <h2 style="color: #4CAF50;">NSE Tracker Pro V2</h2>
+    <h2 style="color: #4CAF50;">NSE BSE TRACKER PRO</h2>
     <p>Please Login to Continue</p>
     <div class="auth-input-container">
         <input type="email" id="email-input" class="auth-input" placeholder="Enter Email">
@@ -154,7 +134,7 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
     <button id="logout-btn">Logout</button>
 
     <div class="header">
-        <h2><span class="status-dot"></span> NSE Tracker</h2>
+        <h2><span class="status-dot"></span> NSE BSE TRACKER PRO V2</h2>
         <button id="theme-btn" class="menu-btn">🌓 Theme</button>
     </div>
 
@@ -163,34 +143,20 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
         <span>⚠️ चेतावनी:</span> शेयर बाजार में निवेश बाज़ार के जोखिमों के अधीन है। यह ऐप केवल ट्रैकिंग और एजुकेशन के लिए है। हम SEBI रजिस्टर्ड एडवाइज़र नहीं हैं। कोई भी निवेश करने से पहले अपनी खुद की रिसर्च करें।
     </div>
 
-    <!-- बाज़ार का लाइव सूचकांक (Nifty & Sensex) -->
+    <!-- बाज़ार का लाइव सूचकांक -->
     <div class="markets-title">
         <span>Markets Today</span>
         <span style="font-size:12px; color:var(--muted); font-weight:normal; cursor:pointer;" onclick="fetchMarketIndices()">↻ Refresh</span>
     </div>
     
     <div class="indices-container">
-        <!-- NIFTY 50 कार्ड -->
         <div class="index-card" id="nifty-card">
-            <div class="index-top">
-                <span class="index-name">NIFTY</span>
-                <span class="index-price" id="nifty-price">...</span>
-            </div>
-            <div class="index-bottom">
-                <span class="index-expiry">Expiry Thu</span>
-                <span class="index-change" id="nifty-change">...</span>
-            </div>
+            <div class="index-top"><span class="index-name">NIFTY</span><span class="index-price" id="nifty-price">...</span></div>
+            <div class="index-bottom"><span class="index-expiry">Expiry Thu</span><span class="index-change" id="nifty-change">...</span></div>
         </div>
-        <!-- SENSEX कार्ड -->
         <div class="index-card" id="sensex-card">
-            <div class="index-top">
-                <span class="index-name">SENSEX</span>
-                <span class="index-price" id="sensex-price">...</span>
-            </div>
-            <div class="index-bottom">
-                <span class="index-expiry">Expiry Fri</span>
-                <span class="index-change" id="sensex-change">...</span>
-            </div>
+            <div class="index-top"><span class="index-name">SENSEX</span><span class="index-price" id="sensex-price">...</span></div>
+            <div class="index-bottom"><span class="index-expiry">Expiry Fri</span><span class="index-change" id="sensex-change">...</span></div>
         </div>
     </div>
 
@@ -203,16 +169,18 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
         <div id="suggestions" class="suggestions-box"></div>
     </div>
     
+    <!-- NSE/BSE Toggle -->
+    <div class="exchange-toggle">
+        <label><input type="radio" name="exchange" value="NSE" checked> NSE (National)</label>
+        <label><input type="radio" name="exchange" value="BSE"> BSE (Bombay)</label>
+    </div>
+    
     <div id="ocr-loading">छवि स्कैन की जा रही है... कृपया प्रतीक्षा करें ⏳</div>
 
-    <!-- सेक्टर वाइज स्टॉक्स लिस्ट -->
     <div id="list"></div>
 </div>
 
 <script type="module">
-// =========================================
-// 1. FIREBASE AUTHENTICATION
-// =========================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
@@ -259,17 +227,13 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// =========================================
-// 2. मेन एप्लीकेशन लॉजिक
-// =========================================
 let isAppReady = false;
 
-// ग्लोबल स्कोप में फंक्शन डालने के लिए (Refresh बटन के लिए)
 window.fetchMarketIndices = async function() {
     const MY_SERVER_URL = "https://dry-king-2d0b.vasimbhaipainter.workers.dev/?sym=";
     const indices = [
-        { id: 'nifty', sym: '%5ENSEI' }, // Yahoo API में निफ़्टी का सिंबल ^NSEI है (URL Enocded)
-        { id: 'sensex', sym: '%5EBSESN' } // सेंसेक्स का सिंबल ^BSESN है
+        { id: 'nifty', sym: '%5ENSEI' }, 
+        { id: 'sensex', sym: '%5EBSESN' } 
     ];
 
     for (let idx of indices) {
@@ -287,17 +251,11 @@ window.fetchMarketIndices = async function() {
             let arrow = diff >= 0 ? '▲' : '▼';
             let sign = diff >= 0 ? '+' : '';
 
-            // नंबर फॉर्मेटिंग (भारतीय स्टाइल में कॉमा लगाने के लिए)
             let formattedCurrent = current.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            let formattedDiff = diff.toFixed(2);
-            let formattedPChange = pChange.toFixed(2);
-
             document.getElementById(`${idx.id}-price`).className = `index-price ${color}`;
             document.getElementById(`${idx.id}-price`).innerHTML = `${formattedCurrent} <span style="font-size:12px">${arrow}</span>`;
-            
             document.getElementById(`${idx.id}-change`).className = `index-change ${color}`;
-            document.getElementById(`${idx.id}-change`).innerText = `${sign}${formattedDiff} (${sign}${formattedPChange}%)`;
-
+            document.getElementById(`${idx.id}-change`).innerText = `${sign}${diff.toFixed(2)} (${sign}${pChange.toFixed(2)}%)`;
         } catch(e) {
             document.getElementById(`${idx.id}-price`).innerText = "Error";
             document.getElementById(`${idx.id}-change`).innerText = "--";
@@ -312,7 +270,6 @@ function initApp() {
     const MY_SERVER_URL = "https://dry-king-2d0b.vasimbhaipainter.workers.dev/?sym=";
     const stockHistoryMap = new Map();
 
-    // लाइव निफ़्टी/सेंसेक्स का डेटा लाएं
     window.fetchMarketIndices();
 
     if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
@@ -321,7 +278,9 @@ function initApp() {
         localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
     });
 
-    let myStocks = JSON.parse(localStorage.getItem('nse_tracker_v2') || '["RELIANCE", "TCS", "HDFCBANK"]');
+    // पुराने डाटा को सपोर्ट करने के लिए :NSE जोड़ना
+    let rawStocks = JSON.parse(localStorage.getItem('nse_tracker_v2') || '["RELIANCE:NSE", "TCS:NSE", "HDFCBANK:NSE"]');
+    let myStocks = rawStocks.map(s => s.includes(':') ? s : s + ':NSE');
     myStocks = [...new Set(myStocks)]; 
 
     const SECTOR_MAP = {
@@ -333,10 +292,8 @@ function initApp() {
         "LT": "Infra 🏗️", "ULTRACEMCO": "Infra 🏗️",
         "IOC": "Oil & Gas 🛢️", "BPCL": "Oil & Gas 🛢️"
     };
-
     function getSector(sym) { return SECTOR_MAP[sym] || "Others 📌"; }
 
-    // सर्च सजेशन (Tickertape API)
     const searchInput = document.getElementById("inp");
     const suggestionsBox = document.getElementById("suggestions");
     let searchTimeout;
@@ -344,17 +301,14 @@ function initApp() {
     searchInput.addEventListener("input", () => {
         let val = searchInput.value.trim();
         if (val.length === 0) { suggestionsBox.style.display = "none"; return; }
-
         suggestionsBox.style.display = "block";
         suggestionsBox.innerHTML = '<div class="suggestion-item small">Searching...</div>';
-
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(async () => {
             try {
                 let res = await fetch(`https://api.tickertape.in/search?text=${val}`);
                 let data = await res.json();
                 suggestionsBox.innerHTML = ""; 
-
                 if (data?.data?.stocks?.length > 0) {
                     data.data.stocks.forEach(stock => {
                         let div = document.createElement("div");
@@ -376,16 +330,18 @@ function initApp() {
 
     document.addEventListener("click", (e) => { if (e.target.id !== "inp") suggestionsBox.style.display = "none"; });
 
-    // स्क्रीनशॉट से स्टॉक्स पढ़ना (OCR)
     document.getElementById("ocr-upload").addEventListener("change", function(e) {
         const file = e.target.files[0];
         if (!file) return;
         
         const loadingText = document.getElementById("ocr-loading");
         loadingText.style.display = "block"; 
-
-        Tesseract.recognize(file, 'eng', { logger: m => console.log(m) })
-        .then(({ data: { text } }) => {
+        Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
             loadingText.style.display = "none";
             const words = text.toUpperCase().replace(/[^A-Z0-9-]/g, ' ').split(/\s+/);
-            let
+            let addedCount = 0;
+            let currentExc = document.querySelector('input[name="exchange"]:checked').value;
+            words.forEach(word => {
+                let formatted = word + ":" + currentExc;
+                if(word.length > 2 && isNaN(word) && !myStocks.includes(formatted)) {
+          
