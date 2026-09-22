@@ -180,6 +180,32 @@ input[type="text"] { flex: 1; padding: 12px; border-radius: 10px; border: 1px so
     <div id="list"></div>
 </div>
 
+<script>
+window.addEventListener("error", function(event) {
+    const loader = document.getElementById("loading-screen");
+    if (loader && loader.style.display !== "none") {
+        loader.innerHTML =
+            '<h2 style="color:#4CAF50;text-align:center;">NSE BSE TRACKER PRO V2</h2>' +
+            '<p style="color:#ff5252;text-align:center;font-size:14px;max-width:90%;">' +
+            'Application error:<br>' +
+            String(event.message || "JavaScript error") +
+            '</p><button onclick="location.reload()" style="margin-top:10px;padding:10px 22px;background:#ff5252;color:#fff;border:none;border-radius:6px;font-weight:bold;">Refresh</button>';
+    }
+});
+
+window.addEventListener("unhandledrejection", function(event) {
+    const loader = document.getElementById("loading-screen");
+    if (loader && loader.style.display !== "none") {
+        const reason = event.reason && event.reason.message ? event.reason.message : String(event.reason || "Unknown error");
+        loader.innerHTML =
+            '<h2 style="color:#4CAF50;text-align:center;">NSE BSE TRACKER PRO V2</h2>' +
+            '<p style="color:#ff5252;text-align:center;font-size:14px;max-width:90%;">' +
+            'Application error:<br>' + reason +
+            '</p><button onclick="location.reload()" style="margin-top:10px;padding:10px 22px;background:#ff5252;color:#fff;border:none;border-radius:6px;font-weight:bold;">Refresh</button>';
+    }
+});
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -343,7 +369,7 @@ function initApp() {
             let currentExc = document.querySelector('input[name="exchange"]:checked').value;
             words.forEach(word => {
                 let formatted = word + ":" + currentExc;
-
+                if (word.length > 2 && isNaN(word) && !myStocks.includes(formatted)) {
                     myStocks.push(formatted);
                     addedCount++;
                 }
