@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firebase Diagnostic Test</title>
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+h1 { color: #55d65c; font-size: 24px; }
+#status {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #222;
+  padding: 15px;
+  border-radius: 8px;
+  line-height: 1.5;
+  font-size: 16px;
+}
+.ok { color: #55d65c; }
+.err { color: #ff5555; }
+.info { color: #ffd166; }
+button {
+  padding: 14px 20px;
+  font-size: 17px;
+  margin-top: 15px;
+  border: 0;
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<h1>Firebase Diagnostic Test</h1>
+<div id="status">Starting test...</div>
+<button onclick="location.reload()">Refresh Test</button>
+
+<script type="module">
+const statusBox = document.getElementById("status");
+
+function log(message, type="info") {
+  const div = document.createElement("div");
+  div.className = type;
+  div.textContent = message;
+  statusBox.appendChild(div);
+}
+
+statusBox.textContent = "";
+
+log("1. Test page loaded successfully.", "ok");
+log("2. Trying to load Firebase...", "info");
+
+try {
+  const firebaseApp = await import(
+    "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"
+  );
+
+  log("3. Firebase App module loaded successfully.", "ok");
+
+  const firebaseAuth = await import(
+    "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"
+  );
+
+  log("4. Firebase Auth module loaded successfully.", "ok");
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBanv14H1SWGaX2A2W9SUkx9pHJz1qCwg8",
+    authDomain: "nse-bse-tracker-9ab75.firebaseapp.com",
+    projectId: "nse-bse-tracker-9ab75",
+    storageBucket: "nse-bse-tracker-9ab75.firebasestorage.app",
+    messagingSenderId: "192783633087",
+    appId: "1:192783633087:web:3999b0d555e6227fa3540a"
+  };
+
+  log("5. Initializing Firebase...", "info");
+
+  const app = firebaseApp.initializeApp(firebaseConfig);
+  log("6. Firebase initialized successfully.", "ok");
+
+  const auth = firebaseAuth.getAuth(app);
+  log("7. Firebase Auth initialized successfully.", "ok");
+
+  log("8. Waiting for onAuthStateChanged...", "info");
+
+  firebaseAuth.onAuthStateChanged(auth, (user) => {
+    if (user) {
+      log("9. Auth state received: USER IS LOGGED IN.", "ok");
+      log("Email: " + (user.email || "not available"), "ok");
+    } else {
+      log("9. Auth state received: NO USER IS LOGGED IN.", "ok");
+      log("This is normal. Firebase Auth is working.", "ok");
+    }
+  });
+
+} catch (error) {
+  log("❌ FIREBASE ERROR", "err");
+  log("Error name: " + (error.name || "unknown"), "err");
+  log("Error message: " + (error.message || "no message"), "err");
+  log("Error code: " + (error.code || "no code"), "err");
+  log("Full error: " + String(error), "err");
+}
+</script>
+
+</body>
+</html>
